@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComicCraft - AI Comic Story Creator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        comicYellow: '#F5C518',
+                        comicDark: '#0D0F17',
+                        comicCard: '#161926',
+                        comicBorder: '#2A2E45',
+                        comicAccent: '#7C3AED'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .comic-title {
+            font-weight: 900;
+            letter-spacing: -0.025em;
+            text-shadow: 2px 2px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000, 4px 4px 0px #7C3AED;
+        }
+        .comic-box-shadow {
+            box-shadow: 6px 6px 0px #F5C518;
+        }
+    </style>
+</head>
+<body class="bg-comicDark text-gray-100 min-h-screen flex flex-col font-sans">
+
+    <!-- Header -->
+    <header class="border-b border-comicBorder bg-comicCard/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-comicYellow text-comicDark p-2 rounded-lg font-black text-xl">
+                    <i class="fa-solid fa-mask"></i>
+                </div>
+                <h1 class="text-2xl font-black text-white tracking-wider">COMIC<span class="text-comicYellow">CRAFT</span></h1>
+            </div>
+            <div class="text-sm text-gray-400 font-medium hidden sm:block">
+                <i class="fa-solid fa-wand-magic-sparkles text-comicYellow mr-1"></i> AI Powered Story Engine
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-10">
+        
+        <!-- Hero Section -->
+        <div class="text-center mb-10">
+            <h2 class="text-4xl md:text-5xl comic-title text-comicYellow mb-4">CREATE YOUR AI COMIC</h2>
+            <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+                Turn your creative story ideas into a complete 5-panel comic book with AI outlines, script writing, generated artwork, and PDF export!
+            </p>
+        </div>
+
+        {% if error %}
+        <div class="mb-6 p-4 bg-red-900/50 border border-red-500 rounded-xl text-red-200 flex items-center gap-3">
+            <i class="fa-solid fa-triangle-exclamation text-xl text-red-400"></i>
+            <div>{{ error }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Form Card -->
+        <div class="bg-comicCard border border-comicBorder rounded-2xl p-6 md:p-8 comic-box-shadow">
+            <form action="/generate" method="POST" id="comicForm" onsubmit="showLoading()">
+                
+                <!-- Concept Prompt -->
+                <div class="mb-6">
+                    <label for="prompt" class="block text-sm font-bold text-comicYellow uppercase tracking-wider mb-2">
+                        <i class="fa-solid fa-lightbulb mr-1"></i> Story Concept & Prompt
+                    </label>
+                    <textarea 
+                        name="prompt" 
+                        id="prompt" 
+                        rows="3" 
+                        required
+                        placeholder="e.g. A rogue cybernetic detective discovers a hidden AI sanctuary beneath a neon-lit cyberpunk metropolis..."
+                        class="w-full bg-comicDark border border-comicBorder rounded-xl p-4 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-comicYellow focus:ring-1 focus:ring-comicYellow transition"
+                    >{{ prompt if prompt else '' }}</textarea>
+                </div>
+
+                <!-- Parameters Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    
+                    <!-- Main Character -->
+                    <div>
+                        <label for="character_name" class="block text-sm font-bold text-gray-300 uppercase tracking-wider mb-2">
+                            <i class="fa-solid fa-user-ninja text-comicYellow mr-1"></i> Main Character
+                        </label>
+                        <input 
+                            type="text" 
+                            name="character_name" 
+                            id="character_name" 
+                            value="{{ character_name if character_name else 'Kaelen Vance' }}"
+                            required
+                            class="w-full bg-comicDark border border-comicBorder rounded-xl p-3.5 text-gray-100 focus:outline-none focus:border-comicYellow transition"
+                        >
+                    </div>
+
+                    <!-- Setting -->
+                    <div>
+                        <label for="setting" class="block text-sm font-bold text-gray-300 uppercase tracking-wider mb-2">
+                            <i class="fa-solid fa-city text-comicYellow mr-1"></i> World / Setting
+                        </label>
+                        <input 
+                            type="text" 
+                            name="setting" 
+                            id="setting" 
+                            value="{{ setting if setting else 'Neon Cyberpunk Metropolis' }}"
+                            required
+                            class="w-full bg-comicDark border border-comicBorder rounded-xl p-3.5 text-gray-100 focus:outline-none focus:border-comicYellow transition"
+                        >
+                    </div>
+
+                    <!-- Tone -->
+                    <div>
+                        <label for="tone" class="block text-sm font-bold text-gray-300 uppercase tracking-wider mb-2">
+                            <i class="fa-solid fa-masks-theater text-comicYellow mr-1"></i> Story Tone
+                        </label>
+                        <select 
+                            name="tone" 
+                            id="tone" 
+                            class="w-full bg-comicDark border border-comicBorder rounded-xl p-3.5 text-gray-100 focus:outline-none focus:border-comicYellow transition"
+                        >
+                            <option value="Action-packed & Thrilling" {% if tone == 'Action-packed & Thrilling' %}selected{% endif %}>Action-packed & Thrilling</option>
+                            <option value="Dark & Noir Mystery" {% if tone == 'Dark & Noir Mystery' %}selected{% endif %}>Dark & Noir Mystery</option>
+                            <option value="Epic Fantasy & Heroic" {% if tone == 'Epic Fantasy & Heroic' %}selected{% endif %}>Epic Fantasy & Heroic</option>
+                            <option value="Sci-Fi Adventure" {% if tone == 'Sci-Fi Adventure' %}selected{% endif %}>Sci-Fi Adventure</option>
+                            <option value="Humorous & Whimsical" {% if tone == 'Humorous & Whimsical' %}selected{% endif %}>Humorous & Whimsical</option>
+                        </select>
+                    </div>
+
+                    <!-- Art Style -->
+                    <div>
+                        <label for="art_style" class="block text-sm font-bold text-gray-300 uppercase tracking-wider mb-2">
+                            <i class="fa-solid fa-palette text-comicYellow mr-1"></i> Art Style
+                        </label>
+                        <select 
+                            name="art_style" 
+                            id="art_style" 
+                            class="w-full bg-comicDark border border-comicBorder rounded-xl p-3.5 text-gray-100 focus:outline-none focus:border-comicYellow transition"
+                        >
+                            <option value="Classic Superhero Comic Book" {% if art_style == 'Classic Superhero Comic Book' %}selected{% endif %}>Classic Superhero Comic Book</option>
+                            <option value="Cyberpunk Graphic Novel" {% if art_style == 'Cyberpunk Graphic Novel' %}selected{% endif %}>Cyberpunk Graphic Novel</option>
+                            <option value="Dark Fantasy Ink Illustration" {% if art_style == 'Dark Fantasy Ink Illustration' %}selected{% endif %}>Dark Fantasy Ink Illustration</option>
+                            <option value="Japanese Manga Anime Style" {% if art_style == 'Japanese Manga Anime Style' %}selected{% endif %}>Japanese Manga Anime Style</option>
+                            <option value="Retro Pop Art Comic" {% if art_style == 'Retro Pop Art Comic' %}selected{% endif %}>Retro Pop Art Comic</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button 
+                    type="submit" 
+                    id="submitBtn"
+                    class="w-full bg-comicYellow hover:bg-yellow-400 text-comicDark font-black text-lg py-4 px-6 rounded-xl transition duration-200 transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 cursor-pointer shadow-lg"
+                >
+                    <i class="fa-solid fa-bolt text-xl"></i>
+                    <span>GENERATE COMIC STORY (5 PANELS)</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="hidden fixed inset-0 bg-comicDark/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 text-center">
+            <div class="relative w-24 h-24 mb-6">
+                <div class="absolute inset-0 border-4 border-comicYellow border-t-transparent rounded-full animate-spin"></div>
+                <div class="absolute inset-2 border-4 border-comicAccent border-b-transparent rounded-full animate-spin" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+                <div class="absolute inset-0 flex items-center justify-center text-comicYellow text-2xl">
+                    <i class="fa-solid fa-book-open animate-pulse"></i>
+                </div>
+            </div>
+            <h3 class="text-3xl font-black text-comicYellow mb-2 comic-title">CRAFTING YOUR COMIC...</h3>
+            <p class="text-gray-300 max-w-md animate-pulse">
+                Gemini AI is designing panel outlines, generating the script, and creating panel artwork. This takes just a moment!
+            </p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-comicBorder bg-comicCard/50 py-6 text-center text-sm text-gray-500">
+        ComicCraft AI Story Creator &copy; 2026. Built with Gemini 1.5 Flash, Gemini 1.5 Pro & Stable Diffusion.
+    </footer>
+
+    <script>
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

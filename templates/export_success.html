@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComicCraft - Export Successful</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        comicYellow: '#F5C518',
+                        comicDark: '#0D0F17',
+                        comicCard: '#161926',
+                        comicBorder: '#2A2E45',
+                        comicAccent: '#7C3AED'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .comic-title {
+            font-weight: 900;
+            text-shadow: 2px 2px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000, 3px 3px 0px #22C55E;
+        }
+    </style>
+</head>
+<body class="bg-comicDark text-gray-100 min-h-screen flex flex-col font-sans">
+
+    <!-- Header -->
+    <header class="border-b border-comicBorder bg-comicCard/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="bg-comicYellow text-comicDark p-2 rounded-lg font-black text-xl">
+                    <i class="fa-solid fa-mask"></i>
+                </div>
+                <h1 class="text-2xl font-black text-white tracking-wider">COMIC<span class="text-comicYellow">CRAFT</span></h1>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-2xl w-full mx-auto px-4 py-16 flex items-center justify-center">
+        
+        <div class="bg-comicCard border border-comicBorder rounded-2xl p-8 md:p-12 text-center shadow-2xl w-full">
+            
+            <!-- Icon Badge -->
+            <div class="w-20 h-20 bg-green-500/20 border-2 border-green-500 text-green-400 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl shadow-lg animate-bounce">
+                <i class="fa-solid fa-check"></i>
+            </div>
+
+            <!-- Title -->
+            <h2 class="text-4xl comic-title text-green-400 mb-3">EXPORT SUCCESSFUL!</h2>
+            <p class="text-gray-300 text-lg mb-8">
+                Your 5-panel AI Comic Storybook has been compiled into a PDF document and is ready to read or print.
+            </p>
+
+            <!-- PDF Link Card -->
+            {% if pdf_url %}
+            <div class="bg-comicDark border border-comicBorder rounded-xl p-4 mb-8 flex items-center justify-between text-left">
+                <div class="flex items-center space-x-3 overflow-hidden">
+                    <div class="text-red-500 text-3xl">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </div>
+                    <div class="truncate">
+                        <div class="font-bold text-gray-200 text-sm truncate">Comic_Storybook.pdf</div>
+                        <div class="text-xs text-gray-500 truncate">{{ pdf_url }}</div>
+                    </div>
+                </div>
+                <a href="{{ pdf_url }}" download class="bg-comicYellow hover:bg-yellow-400 text-comicDark font-black text-xs px-4 py-2 rounded-lg transition flex items-center space-x-1 shrink-0">
+                    <i class="fa-solid fa-download"></i>
+                    <span>SAVE</span>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4">
+                {% if pdf_url %}
+                <a href="{{ pdf_url }}" download class="flex-1 bg-comicYellow hover:bg-yellow-400 text-comicDark font-black py-3.5 px-6 rounded-xl transition flex items-center justify-center space-x-2 shadow-lg">
+                    <i class="fa-solid fa-file-arrow-down text-lg"></i>
+                    <span>DOWNLOAD PDF</span>
+                </a>
+                {% endif %}
+
+                <a href="/" class="flex-1 bg-comicDark hover:bg-comicBorder text-gray-200 font-bold py-3.5 px-6 rounded-xl border border-comicBorder transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-plus text-comicYellow"></i>
+                    <span>CREATE NEW COMIC</span>
+                </a>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-comicBorder bg-comicCard/50 py-6 text-center text-sm text-gray-500">
+        ComicCraft AI Story Creator &copy; 2026. Built with Gemini 1.5 Flash, Gemini 1.5 Pro & Stable Diffusion.
+    </footer>
+
+</body>
+</html>
